@@ -1,0 +1,97 @@
+#docker notes
+
+Command to start docker:-
+
+=> sudo docker run -itd --name [name] -e ORACLE_PWD='[Password]' -p 1521:1521 container-registry.oracle.com/database/free:latest
+
+Command to use bash in oracle:-
+
+=> sudo docker exec -it theoracle bash
+
+	Command in the bash to use SQL database
+
+		-> sqlplus sys/password@localhost:1521 as sysdba
+
+		or if you have a database you want to switch to
+
+		   sqlplus sys/password@localhost:1521/[database-name] as sysdba
+
+		or if you want to come in as a particular user in the database
+
+			sqlplus [Username]/[password]@localhost:1521/[database-name] as sysdba
+
+		Command to create pluggable database
+	
+			-> create PLUGGABLE DATABASE [database_name] admin user [USER_NAME] IDENTIFIED BY [PASSWORD]
+			   create_file_dest='/home/oracle';
+
+		Command to alter pluggable database
+
+			-> ALTER PLUGGABLE DATABASE [DATABASE-name] OPEN;
+
+Commands in the database:-
+
+=>Creating a root user
+
+	create user c##[User_name] identified by [PASSWORD];
+
+=>To grant session create
+
+	grant create session to [User-name];
+
+
+=>To grant table create
+
+	grant create table to [User-name];
+
+=>To grant unlimited table space
+
+	grant unlimited table space to [User-name];
+
+
+Command to make a database:-
+
+[It is just the same as using sqlmap from this point]
+
+
+Putting os:-
+	
+	sudo docker pull [image]
+
+Docker exec os:-
+
+	sudo docker exec -it [name] bash
+
+Create network:-
+
+	sudo docker network create [network_name]
+
+Using the above network:-
+
+	sudo docker run -itd --rm --network [network_name] --name [name] busybox
+
+Exec:-
+	sudo docker exec -itd [name] sh
+
+Connect your docker network to your home network using macdvlan (unique MAC address):-
+
+	sudo docker network create -d macvlan --subnet [subnet] --gateway [gateway] -o
+parent=[network-interference] [network-name]
+
+Run the above:-
+
+	sudo docker run -itd --rm --network [network-name] --ip [assign_an_ip] --name [name] busybox
+	
+	sudo ip link set [network-interference] promisc	on	->	do this on your 										command line and 										not on the 											docker container
+
+	sudo docker exec -it [name] sh
+
+Using ipvlan to directly connect to home network (same MAC address):-
+
+	sudo docker network create -d ipvlan --subnet [subnet] --gateway [gateway] -o parent=[network-interface] [name]
+
+Use the above:-
+
+	sudo docker exec -itd --rm --network [network-name] --ip [assign_and_ip] --name [name] busybody
+
+
